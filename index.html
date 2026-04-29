@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>máy tính</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00d4ff;
+            --secondary: #ff6b6b;
+            --accent: #ffd700;
+            --dark: #0a0a1a;
+            --darker: #050510;
+            --card-bg: rgba(20, 20, 50, 0.7);
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse at 20% 80%, rgba(0, 212, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(255, 107, 107, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(255, 215, 0, 0.05) 0%, transparent 60%),
+                linear-gradient(135deg, #050510 0%, #0a0a2e 50%, #050510 100%);
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle var(--duration) ease-in-out infinite;
+            opacity: 0;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: var(--opacity); transform: scale(1); }
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 40px 20px 20px;
+            position: relative;
+        }
+
+        .title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00d4ff, #ff6b6b, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 40px rgba(0, 212, 255, 0.3);
+            letter-spacing: 4px;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.5)); }
+            to { filter: drop-shadow(0 0 30px rgba(255, 107, 107, 0.5)); }
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #aaa;
+            margin-top: 10px;
+            letter-spacing: 2px;
+            font-weight: 300;
+        }
+
+        .subtitle span {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Calculator Section */
+        .calc-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .calc-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 30px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            flex: 1;
+            min-width: 320px;
+            max-width: 420px;
+        }
+
+        .calc-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 212, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .calc-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Standard Calculator */
+        .calc-display {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: right;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .calc-history {
+            font-size: 0.85rem;
+            color: #888;
+            min-height: 20px;
+            margin-bottom: 5px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .calc-result {
+            font-size: 2.5rem;
+            font-family: 'Orbitron', sans-serif;
+            color: #fff;
+            word-break: break-all;
+            min-height: 50px;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .calc-btn {
+            padding: 18px;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-family: 'Inter', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .calc-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s, height 0.4s;
+        }
+
+        .calc-btn:active::before {
+            width: 200px;
+            height: 200px;
+        }
+
+        .btn-num {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+
+        .btn-num:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.05);
+        }
+
+        .btn-op {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 212, 255, 0.1));
+            color: var(--primary);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-op:hover {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(0, 212, 255, 0.2));
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .btn-eq {
+            background: linear-gradient(135deg, var(--primary), #0099cc);
+            color: #fff;
+            grid-column: span 2;
+        }
+
+        .btn-eq:hover {
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
+            transform: scale(1.02);
+        }
+
+        .btn-clear {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.3), rgba(255, 107, 107, 0.1));
+            color: var(--secondary);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-clear:hover {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.4), rgba(255, 107, 107, 0.2));
+        }
+
+        /* Scientific Calculator */
+        .sci-buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        .sci-btn {
+            padding: 12px 8px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: rgba(255, 255, 255, 0.06);
+            color: #ccc;
+        }
+
+        .sci-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        .sci-btn.func {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05));
+            color: var(--accent);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .sci-btn.func:hover {
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+        }
+
+        /* Converter Section */
+        .converter-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .conv-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .conv-card:hover {
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 212, 255, 0.1);
+        }
+
+        .conv-title {
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .conv-title .icon {
+            font-size: 1.5rem;
+        }
+
+        .conv-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .conv-input-group input, .conv-input-group select {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .conv-input-group input:focus, .conv-input-group select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+        }
+
+        .conv-input-group select option {
+            background: #0a0a2e;
+            color: #fff;
+        }
+
+        .conv-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .conv-row span {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .conv-result {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 212, 255, 0.05));
+            border-radius: 12px;
+            padding: 14px 16px;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary);
+            font-size: 1.1rem;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* History Section */
+        .history-section {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 25px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .history-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .clear-history {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            color: var(--secondary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .clear-history:hover {
+            background: rgba(255, 107, 107, 0.3);
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .history-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px 16px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            border-left: 3px solid var(--primary);
+        }
+
+        .history-item:hover {
+            background: rgba(0, 0, 0, 0.3);
+            transform: translateX(5px);
+        }
+
+        .history-item .expr {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .history-item .res {
+            color: var(--primary);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+        }
+
+        .history-item .time {
+            font-size: 0.75rem;
+            color: #555;
+            margin-left: 10px;
+        }
+
+        /* Donate Section */
+        .donate-section {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 20px;
+        }
+
+        .donate-btn {
+            background: linear-gradient(135deg, #00d4ff, #0099cc, #00d4ff);
+            background-size: 200% 200%;
+            animation: gradientShift 3s ease infinite;
+            border: none;
+            padding: 18px 50px;
+            border-radius: 50px;
+            color: #fff;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3);
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .donate-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 50px rgba(0, 212, 255, 0.5);
+        }
+
+        .donate-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* Popup */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .popup-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .popup {
+            background: linear-gradient(135deg, #0a0a2e, #1a1a4e);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 212, 255, 0.1);
+            animation: popupIn 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .popup::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes popupIn {
+            from { transform: scale(0.8) translateY(20px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .popup-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .popup h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .popup p {
+            color: #aaa;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .popup .bank-info {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .popup .bank-info .label {
+            color: #888;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+
+        .popup .bank-info .value {
+            color: var(--accent);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .popup .bank-info .copy-btn {
+            background: rgba(0, 212, 255, 0.2);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .popup .bank-info .copy-btn:hover {
+            background: rgba(0, 212, 255, 0.3);
+        }
+
+        .popup-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .popup-btn {
+            padding: 12px 30px;
+            border-radius: 12px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .popup-btn.yes {
+            background: linear-gradient(135deg, var(--primary), #0099cc);
+            color: #fff;
+        }
+
+        .popup-btn.yes:hover {
+            box-shadow: 0 0 25px rgba(0, 212, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        .popup-btn.no {
+            background: rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .popup-btn.no:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+
+        /* Thank you popup */
+        .thank-you-popup .popup-icon {
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-text {
+            font-family: 'Orbitron', sans-serif;
+            color: #888;
+            font-size: 0.9rem;
+            line-height: 2;
+            letter-spacing: 2px;
+        }
+
+        .footer-text .highlight {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .footer-text .vn {
+            color: #ff6b6b;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 212, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 212, 255, 0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .title { font-size: 2.2rem; }
+            .calc-card { min-width: 100%; }
+            .sci-buttons { grid-template-columns: repeat(4, 1fr); }
+            .popup { padding: 30px 20px; }
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.9), rgba(0, 153, 204, 0.9));
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+            z-index: 2000;
+            transition: transform 0.4s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    <div class="stars" id="stars"></div>
+
+    <header>
+        <h1 class="title">máy tính</h1>
+        <p class="subtitle">ĐƯỢC CODE BỞI : <span>Nguyễn Chí Dự ✨🇻🇳✨</span></p>
+    </header>
+
+    <div class="container">
+        <!-- Calculator Section -->
+        <div class="calc-section">
+            <!-- Standard Calculator -->
+            <div class="calc-card">
+                <div class="calc-title">🧮 Máy Tính Cơ Bản</div>
+                <div class="calc-display">
+                    <div class="calc-history" id="stdHistory"></div>
+                    <div class="calc-result" id="stdResult">0</div>
+                </div>
+                <div class="calc-buttons">
+                    <button class="calc-btn btn-clear" onclick="stdClear()">AC</button>
+                    <button class="calc-btn btn-clear" onclick="stdBack()">⌫</button>
+                    <button class="calc-btn btn-op" onclick="stdAppend('%')">%</button>
+                    <button class="calc-btn btn-op" onclick="stdAppend('/')">÷</button>
+                    
+                    <button class="calc-btn btn-num" onclick="stdAppend('7')">7</button>
+                    <button class="calc-btn btn-num" onclick="stdAppend('8')">8</button>
+                    <button class="calc-btn btn-num" onclick="stdAppend('9')">9</button>
+                    <button class="calc-btn btn-op" onclick="stdAppend('*')">×</button>
+                    
+                    <button class="calc-btn btn-num" onclick="stdAppend('4')">4</button>
+                    <button class="calc-btn btn-num" onclick="stdAppend('5')">5</button>
+                    <button class="calc-btn btn-num" onclick="stdAppend('6')">6</button>
+                    <button class="calc-btn btn-op" onclick="stdAppend('-')">−</button>
+                    
+                    <button class="calc-btn btn-num" onclick="stdAppend('1')">1</button>
+                    <button class="calc-btn btn-num" onclick="stdAppend('2')">2</button>
+                    <button class="calc-btn btn-num" onclick="stdAppend('3')">3</button>
+                    <button class="calc-btn btn-op" onclick="stdAppend('+')">+</button>
+                    
+                    <button class="calc-btn btn-num" onclick="stdAppend('0')">0</button>
+                    <button class="calc-btn btn-num" onclick="stdAppend('.')">.</button>
+                    <button class="calc-btn btn-eq" onclick="stdCalculate()">=</button>
+                </div>
+            </div>
+
+            <!-- Scientific Calculator -->
+            <div class="calc-card">
+                <div class="calc-title">🔬 Máy Tính Khoa Học</div>
+                <div class="calc-display">
+                    <div class="calc-history" id="sciHistory"></div>
+                    <div class="calc-result" id="sciResult">0</div>
+                </div>
+                <div class="sci-buttons">
+                    <button class="sci-btn func" onclick="sciFunc('sin')">sin</button>
+                    <button class="sci-btn func" onclick="sciFunc('cos')">cos</button>
+                    <button class="sci-btn func" onclick="sciFunc('tan')">tan</button>
+                    <button class="sci-btn func" onclick="sciFunc('log')">log</button>
+                    <button class="sci-btn func" onclick="sciFunc('ln')">ln</button>
+                    
+                    <button class="sci-btn func" onclick="sciFunc('sqrt')">√</button>
+                    <button class="sci-btn func" onclick="sciFunc('cbrt')">∛</button>
+                    <button class="sci-btn func" onclick="sciFunc('pow')">xʸ</button>
+                    <button class="sci-btn func" onclick="sciFunc('fact')">n!</button>
+                    <button class="sci-btn func" onclick="sciFunc('abs')">|x|</button>
+                    
+                    <button class="sci-btn func" onclick="sciFunc('pi')">π</button>
+                    <button class="sci-btn func" onclick="sciFunc('e')">e</button>
+                    <button class="sci-btn func" onclick="sciFunc('inv')">1/x</button>
+                    <button class="sci-btn func" onclick="sciFunc('sq')">x²</button>
+                    <button class="sci-btn func" onclick="sciClear()">AC</button>
+                    
+                    <button class="sci-btn" onclick="sciAppend('7')">7</button>
+                    <button class="sci-btn" onclick="sciAppend('8')">8</button>
+                    <button class="sci-btn" onclick="sciAppend('9')">9</button>
+                    <button class="sci-btn" onclick="sciAppend('/')">÷</button>
+                    <button class="sci-btn" onclick="sciBack()">⌫</button>
+                    
+                    <button class="sci-btn" onclick="sciAppend('4')">4</button>
+                    <button class="sci-btn" onclick="sciAppend('5')">5</button>
+                    <button class="sci-btn" onclick="sciAppend('6')">6</button>
+                    <button class="sci-btn" onclick="sciAppend('*')">×</button>
+                    <button class="sci-btn" onclick="sciAppend('(')">(</button>
+                    
+                    <button class="sci-btn" onclick="sciAppend('1')">1</button>
+                    <button class="sci-btn" onclick="sciAppend('2')">2</button>
+                    <button class="sci-btn" onclick="sciAppend('3')">3</button>
+                    <button class="sci-btn" onclick="sciAppend('-')">−</button>
+                    <button class="sci-btn" onclick="sciAppend(')')">)</button>
+                    
+                    <button class="sci-btn" onclick="sciAppend('0')">0</button>
+                    <button class="sci-btn" onclick="sciAppend('.')">.</button>
+                    <button class="sci-btn" style="background: linear-gradient(135deg, var(--primary), #0099cc); color: #fff;" onclick="sciCalculate()">=</button>
+                    <button class="sci-btn" onclick="sciAppend('+')">+</button>
+                    <button class="sci-btn" onclick="sciAppend('^')">^</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Converter Section -->
+        <div class="converter-section">
+            <!-- Length Converter -->
+            <div class="conv-card">
+                <div class="conv-title"><span class="icon">📏</span> Đổi Độ Dài</div>
+                <div class="conv-input-group">
+                    <input type="number" id="lenInput" placeholder="Nhập giá trị..." oninput="convertLength()">
+                    <div class="conv-row">
+                        <select id="lenFrom" onchange="convertLength()">
+                            <option value="m">Mét (m)</option>
+                            <option value="km">Kilômét (km)</option>
+                            <option value="cm">Xentimét (cm)</option>
+                            <option value="mm">Milimét (mm)</option>
+                            <option value="ft">Foot (ft)</option>
+                            <option value="in">Inch (in)</option>
+                            <option value="yd">Yard (yd)</option>
+                            <option value="mi">Dặm (mi)</option>
+                        </select>
+                        <span>➜</span>
+                        <select id="lenTo" onchange="convertLength()">
+                            <option value="km">Kilômét (km)</option>
+                            <option value="m">Mét (m)</option>
+                            <option value="cm">Xentimét (cm)</option>
+                            <option value="mm">Milimét (mm)</option>
+                            <option value="ft">Foot (ft)</option>
+                            <option value="in">Inch (in)</option>
+                            <option value="yd">Yard (yd)</option>
+                            <option value="mi">Dặm (mi)</option>
+                        </select>
+                    </div>
+                    <div class="conv-result" id="lenResult">Kết quả sẽ hiển thị ở đây</div>
+                </div>
+            </div>
+
+            <!-- Weight Converter -->
+            <div class="conv-card">
+                <div class="conv-title"><span class="icon">⚖️</span> Đổi Khối Lượng</div>
+                <div class="conv-input-group">
+                    <input type="number" id="weightInput" placeholder="Nhập giá trị..." oninput="convertWeight()">
+                    <div class="conv-row">
+                        <select id="weightFrom" onchange="convertWeight()">
+                            <option value="kg">Kilôgam (kg)</option>
+                            <option value="g">Gam (g)</option>
+                            <option value="mg">Miligam (mg)</option>
+                            <option value="t">Tấn (t)</option>
+                            <option value="lb">Pound (lb)</option>
+                            <option value="oz">Ounce (oz)</option>
+                        </select>
+                        <span>➜</span>
+                        <select id="weightTo" onchange="convertWeight()">
+                            <option value="g">Gam (g)</option>
+                            <option value="kg">Kilôgam (kg)</option>
+                            <option value="mg">Miligam (mg)</option>
+                            <option value="t">Tấn (t)</option>
+                            <option value="lb">Pound (lb)</option>
+                            <option value="oz">Ounce (oz)</option>
+                        </select>
+                    </div>
+                    <div class="conv-result" id="weightResult">Kết quả sẽ hiển thị ở đây</div>
+                </div>
+            </div>
+
+            <!-- Temperature Converter -->
+            <div class="conv-card">
+                <div class="conv-title"><span class="icon">🌡️</span> Đổi Nhiệt Độ</div>
+                <div class="conv-input-group">
+                    <input type="number" id="tempInput" placeholder="Nhập giá trị..." oninput="convertTemp()">
+                    <div class="conv-row">
+                        <select id="tempFrom" onchange="convertTemp()">
+                            <option value="c">Độ C (°C)</option>
+                            <option value="f">Độ F (°F)</option>
+                            <option value="k">Kelvin (K)</option>
+                        </select>
+                        <span>➜</span>
+                        <select id="tempTo" onchange="convertTemp()">
+                            <option value="f">Độ F (°F)</option>
+                            <option value="c">Độ C (°C)</option>
+                            <option value="k">Kelvin (K)</option>
+                        </select>
+                    </div>
+                    <div class="conv-result" id="tempResult">Kết quả sẽ hiển thị ở đây</div>
+                </div>
+            </div>
+
+            <!-- Area Converter -->
+            <div class="conv-card">
+                <div class="conv-title"><span class="icon">📐</span> Đổi Diện Tích</div>
+                <div class="conv-input-group">
+                    <input type="number" id="areaInput" placeholder="Nhập giá trị..." oninput="convertArea()">
+                    <div class="conv-row">
+                        <select id="areaFrom" onchange="convertArea()">
+                            <option value="m2">m²</option>
+                            <option value="km2">km²</option>
+                            <option value="cm2">cm²</option>
+                            <option value="ha">Hecta (ha)</option>
+                            <option value="ft2">ft²</option>
+                            <option value="ac">Acre</option>
+                        </select>
+                        <span>➜</span>
+                        <select id="areaTo" onchange="convertArea()">
+                            <option value="m2">m²</option>
+                            <option value="km2">km²</option>
+                            <option value="cm2">cm²</option>
+                            <option value="ha">Hecta (ha)</option>
+                            <option value="ft2">ft²</option>
+                            <option value="ac">Acre</option>
+                        </select>
+                    </div>
+                    <div class="conv-result" id="areaResult">Kết quả sẽ hiển thị ở đây</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Section -->
+        <div class="history-section" id="historySection">
+            <div class="history-header">
+                <div class="history-title">📜 Lịch Sử Tính Toán</div>
+                <button class="clear-history" onclick="clearAllHistory()">🗑️ Xóa Lịch Sử</button>
+            </div>
+            <div class="history-list" id="historyList">
+                <div style="text-align: center; color: #555; padding: 20px;">Chưa có lịch sử tính toán</div>
+            </div>
+        </div>
+
+        <!-- Donate Section -->
+        <div class="donate-section">
+            <button class="donate-btn" onclick="showDonatePopup()">
+                ☕ Ủng Hộ Tác Giả
+            </button>
+        </div>
+    </div>
+
+    <!-- Donate Popup -->
+    <div class="popup-overlay" id="donatePopup">
+        <div class="popup">
+            <div class="popup-icon">☕</div>
+            <h2>Ủng Hộ Tác Giả</h2>
+            <p>Bạn có muốn donate cho tác giả không?</p>
+            <p style="font-size: 0.9rem; color: #666;">Mọi sự ủng hộ đều là động lực lớn! 💪</p>
+            <div class="popup-buttons">
+                <button class="popup-btn yes" onclick="confirmDonate()">✅ Có, tôi muốn donate</button>
+                <button class="popup-btn no" onclick="closeDonatePopup()">❌ Không, cảm ơn</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bank Info Popup -->
+    <div class="popup-overlay" id="bankPopup">
+        <div class="popup">
+            <div class="popup-icon">🏦</div>
+            <h2>Thông Tin Chuyển Khoản</h2>
+            <div class="bank-info">
+                <div class="label">Số Tài Khoản</div>
+                <div class="value" id="stkText">038.770.3144</div>
+                <button class="copy-btn" onclick="copySTK()">📋 Sao chép</button>
+            </div>
+            <div class="bank-info">
+                <div class="label">Chủ Tài Khoản</div>
+                <div class="value" style="font-size: 1.1rem;">NGUYEN CHI DU</div>
+            </div>
+            <div class="bank-info">
+                <div class="label">Ngân Hàng</div>
+                <div class="value" style="font-size: 1.1rem;">MB BANK</div>
+            </div>
+            <div class="popup-buttons">
+                <button class="popup-btn yes" onclick="showThankYou()">✅ Đã chuyển khoản</button>
+                <button class="popup-btn no" onclick="closeBankPopup()">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thank You Popup -->
+    <div class="popup-overlay" id="thankYouPopup">
+        <div class="popup thank-you-popup">
+            <div class="popup-icon">🙏</div>
+            <h2>Cảm Ơn Bạn!</h2>
+            <p>Rất cảm ơn sự ủng hộ của bạn! ❤️</p>
+            <p style="font-size: 0.9rem; color: #666;">Mọi đóng góp đều giúp tác giả có thêm động lực phát triển!</p>
+            <div class="popup-buttons">
+                <button class="popup-btn yes" onclick="closeThankYou()">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">Đã sao chép!</div>
+
+    <footer>
+        <div class="footer-text">
+            <div><span class="vn">MADE IN VN 🇻🇳</span></div>
+            <div>MADE BY : <span class="highlight">NGUYỄN CHÍ DỰ</span></div>
+        </div>
+    </footer>
+
+    <script>
+        // ===== CREATE STARS =====
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+                star.style.setProperty('--opacity', Math.random() * 0.8 + 0.2);
+                star.style.animationDelay = Math.random() * 5 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+        createStars();
+
+        // ===== LOCALSTORAGE =====
+        function getHistory() {
+            const h = localStorage.getItem('calcHistory');
+            return h ? JSON.parse(h) : [];
+        }
+
+        function saveHistory(item) {
+            let history = getHistory();
+            history.unshift(item);
+            if (history.length > 50) history = history.slice(0, 50);
+            localStorage.setItem('calcHistory', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function clearAllHistory() {
+            localStorage.removeItem('calcHistory');
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            const history = getHistory();
+            if (history.length === 0) {
+                list.innerHTML = '<div style="text-align: center; color: #555; padding: 20px;">Chưa có lịch sử tính toán</div>';
+                return;
+            }
+            list.innerHTML = history.map(item => `
+                <div class="history-item">
+                    <div>
+                        <span class="expr">${item.expr}</span>
+                        <span class="time">${item.time}</span>
+                    </div>
+                    <span class="res">= ${item.result}</span>
+                </div>
+            `).join('');
+        }
+
+        // ===== STANDARD CALCULATOR =====
+        let stdExpr = '';
+        let stdPrev = '';
+
+        function stdAppend(val) {
+            stdExpr += val;
+            document.getElementById('stdResult').textContent = stdExpr || '0';
+        }
+
+        function stdClear() {
+            stdExpr = '';
+            stdPrev = '';
+            document.getElementById('stdResult').textContent = '0';
+            document.getElementById('stdHistory').textContent = '';
+        }
+
+        function stdBack() {
+            stdExpr = stdExpr.slice(0, -1);
+            document.getElementById('stdResult').textContent = stdExpr || '0';
+        }
+
+        function stdCalculate() {
+            if (!stdExpr) return;
+            try {
+                const safeExpr = stdExpr.replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-');
+                const result = eval(safeExpr);
+                const formatted = Number(result.toFixed(10)).toString();
+                document.getElementById('stdHistory').textContent = stdExpr + ' =';
+                document.getElementById('stdResult').textContent = formatted;
+                
+                saveHistory({
+                    expr: stdExpr,
+                    result: formatted,
+                    time: new Date().toLocaleTimeString('vi-VN'),
+                    type: 'standard'
+                });
+                
+                stdPrev = stdExpr;
+                stdExpr = formatted;
+            } catch (e) {
+                document.getElementById('stdResult').textContent = 'Lỗi';
+                setTimeout(() => stdClear(), 1500);
+            }
+        }
+
+        // ===== SCIENTIFIC CALCULATOR =====
+        let sciExpr = '';
+
+        function sciAppend(val) {
+            sciExpr += val;
+            document.getElementById('sciResult').textContent = sciExpr || '0';
+        }
+
+        function sciClear() {
+            sciExpr = '';
+            document.getElementById('sciResult').textContent = '0';
+            document.getElementById('sciHistory').textContent = '';
+        }
+
+        function sciBack() {
+            sciExpr = sciExpr.slice(0, -1);
+            document.getElementById('sciResult').textContent = sciExpr || '0';
+        }
+
+        function sciFunc(func) {
+            switch(func) {
+                case 'sin': sciExpr += 'Math.sin('; break;
+                case 'cos': sciExpr += 'Math.cos('; break;
+                case 'tan': sciExpr += 'Math.tan('; break;
+                case 'log': sciExpr += 'Math.log10('; break;
+                case 'ln': sciExpr += 'Math.log('; break;
+                case 'sqrt': sciExpr += 'Math.sqrt('; break;
+                case 'cbrt': sciExpr += 'Math.cbrt('; break;
+                case 'pow': sciExpr += 'Math.pow('; break;
+                case 'abs': sciExpr += 'Math.abs('; break;
+                case 'pi': sciExpr += 'Math.PI'; break;
+                case 'e': sciExpr += 'Math.E'; break;
+                case 'inv': sciExpr = '1/(' + sciExpr + ')'; break;
+                case 'sq': sciExpr = '(' + sciExpr + ')**2'; break;
+                case 'fact': 
+                    try {
+                        const n = eval(sciExpr);
+                        let f = 1;
+                        for(let i=2; i<=n; i++) f *= i;
+                        sciExpr = f.toString();
+                    } catch(e) { sciExpr = '0'; }
+                    break;
+            }
+            document.getElementById('sciResult').textContent = sciExpr || '0';
+        }
+
+        function sciCalculate() {
+            if (!sciExpr) return;
+            try {
+                let expr = sciExpr.replace(/\^/g, '**');
+                const result = eval(expr);
+                const formatted = Number(result.toFixed(10)).toString();
+                document.getElementById('sciHistory').textContent = sciExpr + ' =';
+                document.getElementById('sciResult').textContent = formatted;
+                
+                saveHistory({
+                    expr: sciExpr,
+                    result: formatted,
+                    time: new Date().toLocaleTimeString('vi-VN'),
+                    type: 'scientific'
+                });
+                
+                sciExpr = formatted;
+            } catch (e) {
+                document.getElementById('sciResult').textContent = 'Lỗi';
+                setTimeout(() => sciClear(), 1500);
+            }
+        }
+
+        // ===== CONVERTERS =====
+        const lenRates = {
+            m: 1, km: 0.001, cm: 100, mm: 1000,
+            ft: 3.28084, in: 39.3701, yd: 1.09361, mi: 0.000621371
+        };
+
+        function convertLength() {
+            const val = parseFloat(document.getElementById('lenInput').value);
+            const from = document.getElementById('lenFrom').value;
+            const to = document.getElementById('lenTo').value;
+            if (isNaN(val)) { document.getElementById('lenResult').textContent = 'Kết quả sẽ hiển thị ở đây'; return; }
+            const meters = val / lenRates[from];
+            const result = meters * lenRates[to];
+            document.getElementById('lenResult').textContent = result.toFixed(6).replace(/\.?0+$/, '') + ' ' + to;
+        }
+
+        const weightRates = {
+            kg: 1, g: 1000, mg: 1000000, t: 0.001,
+            lb: 2.20462, oz: 35.274
+        };
+
+        function convertWeight() {
+            const val = parseFloat(document.getElementById('weightInput').value);
+            const from = document.getElementById('weightFrom').value;
+            const to = document.getElementById('weightTo').value;
+            if (isNaN(val)) { document.getElementById('weightResult').textContent = 'Kết quả sẽ hiển thị ở đây'; return; }
+            const kg = val / weightRates[from];
+            const result = kg * weightRates[to];
+            document.getElementById('weightResult').textContent = result.toFixed(6).replace(/\.?0+$/, '') + ' ' + to;
+        }
+
+        function convertTemp() {
+            const val = parseFloat(document.getElementById('tempInput').value);
+            const from = document.getElementById('tempFrom').value;
+            const to = document.getElementById('tempTo').value;
+            if (isNaN(val)) { document.getElementById('tempResult').textContent = 'Kết quả sẽ hiển thị ở đây'; return; }
+            let c;
+            if (from === 'c') c = val;
+            else if (from === 'f') c = (val - 32) * 5/9;
+            else c = val - 273.15;
+            
+            let result;
+            if (to === 'c') result = c;
+            else if (to === 'f') result = c * 9/5 + 32;
+            else result = c + 273.15;
+            
+            document.getElementById('tempResult').textContent = result.toFixed(2) + ' °' + to.toUpperCase();
+        }
+
+        const areaRates = {
+            m2: 1, km2: 0.000001, cm2: 10000, ha: 0.0001,
+            ft2: 10.7639, ac: 0.000247105
+        };
+
+        function convertArea() {
+            const val = parseFloat(document.getElementById('areaInput').value);
+            const from = document.getElementById('areaFrom').value;
+            const to = document.getElementById('areaTo').value;
+            if (isNaN(val)) { document.getElementById('areaResult').textContent = 'Kết quả sẽ hiển thị ở đây'; return; }
+            const m2 = val / areaRates[from];
+            const result = m2 * areaRates[to];
+            document.getElementById('areaResult').textContent = result.toFixed(6).replace(/\.?0+$/, '') + ' ' + to;
+        }
+
+        // ===== POPUP SYSTEM =====
+        function showDonatePopup() {
+            document.getElementById('donatePopup').classList.add('active');
+        }
+
+        function closeDonatePopup() {
+            document.getElementById('donatePopup').classList.remove('active');
+        }
+
+        function confirmDonate() {
+            closeDonatePopup();
+            setTimeout(() => document.getElementById('bankPopup').classList.add('active'), 300);
+        }
+
+        function closeBankPopup() {
+            document.getElementById('bankPopup').classList.remove('active');
+        }
+
+        function copySTK() {
+            navigator.clipboard.writeText('0387703144').then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
+            });
+        }
+
+        function showThankYou() {
+            closeBankPopup();
+            setTimeout(() => document.getElementById('thankYouPopup').classList.add('active'), 300);
+        }
+
+        function closeThankYou() {
+            document.getElementById('thankYouPopup').classList.remove('active');
+        }
+
+        // Close popup on outside click
+        document.querySelectorAll('.popup-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay && overlay.id !== 'thankYouPopup') {
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+
+        // Keyboard support for standard calc
+        document.addEventListener('keydown', (e) => {
+            const key = e.key;
+            if (/[0-9+\-*/.%]/.test(key)) stdAppend(key);
+            else if (key === 'Enter') stdCalculate();
+            else if (key === 'Backspace') stdBack();
+            else if (key === 'Escape') stdClear();
+        });
+
+        // Init
+        renderHistory();
+    </script>
+</body>
+</html>
